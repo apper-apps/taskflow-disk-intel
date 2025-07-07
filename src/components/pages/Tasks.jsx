@@ -120,10 +120,11 @@ const getPageTitle = () => {
 
       <div className="p-6">
         <div className="mb-6">
-          <FilterBar
+<FilterBar
             filters={filters}
             onFilterChange={handleFilterChange}
             onClearFilters={handleClearFilters}
+            projects={projects}
           />
         </div>
 
