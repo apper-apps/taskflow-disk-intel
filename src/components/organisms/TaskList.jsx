@@ -1,18 +1,19 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-toastify';
-import TaskCard from '@/components/molecules/TaskCard';
-import Loading from '@/components/ui/Loading';
-import Error from '@/components/ui/Error';
-import Empty from '@/components/ui/Empty';
-import { taskService } from '@/services/api/taskService';
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import TaskCard from "@/components/molecules/TaskCard";
+import { taskService } from "@/services/api/taskService";
 
 const TaskList = ({ 
   projectId, 
   searchQuery, 
   filters, 
   onTaskEdit,
-  onTaskCreate 
+  onTaskCreate,
+  presetFilter 
 }) => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -67,7 +68,7 @@ const TaskList = ({
     }
   };
 
-  const filteredTasks = tasks.filter(task => {
+const filteredTasks = tasks.filter(task => {
     const matchesSearch = !searchQuery || 
       task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       task.description?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -76,7 +77,30 @@ const TaskList = ({
     const matchesPriority = !filters.priority || filters.priority === 'all' || task.priority === filters.priority;
     const matchesProject = !filters.project || filters.project === 'all' || task.projectId === filters.project;
     
-    return matchesSearch && matchesStatus && matchesPriority && matchesProject;
+    // Apply preset filter from dashboard drill-down
+    let matchesPresetFilter = true;
+    if (presetFilter) {
+      const today = new Date();
+      const taskDate = task.dueDate ? new Date(task.dueDate) : null;
+      
+      switch (presetFilter) {
+        case 'today':
+          matchesPresetFilter = taskDate && taskDate.toDateString() === today.toDateString();
+          break;
+        case 'overdue':
+          matchesPresetFilter = taskDate && taskDate < today && task.status !== 'Done';
+          break;
+        case 'completed':
+          const startWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+          const endWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 6);
+          matchesPresetFilter = task.status === 'Done' && taskDate && taskDate >= startWeek && taskDate <= endWeek;
+          break;
+        default:
+          matchesPresetFilter = true;
+      }
+    }
+    
+    return matchesSearch && matchesStatus && matchesPriority && matchesProject && matchesPresetFilter;
   });
 
   if (loading) return <Loading variant="tasks" />;

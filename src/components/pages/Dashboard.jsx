@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { endOfWeek, format, startOfWeek } from "date-fns";
 import { toast } from "react-toastify";
@@ -18,6 +18,7 @@ import { projectService } from "@/services/api/projectService";
 import { taskService } from "@/services/api/taskService";
 const Dashboard = () => {
   const { onMenuClick, onProjectsChange } = useOutletContext();
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -173,7 +174,7 @@ const todayTasks = tasks.filter(task => {
           </p>
         </div>
 
-        {/* Stats Cards */}
+{/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {dashboardStats.map((stat, index) => (
             <motion.div
@@ -181,7 +182,18 @@ const todayTasks = tasks.filter(task => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 cursor-pointer hover:shadow-md transition-shadow duration-200"
+              onClick={() => {
+                const filterMap = {
+                  'Tasks Due Today': 'today',
+                  'Completed This Week': 'completed',
+                  'Overdue Tasks': 'overdue'
+                };
+                const filterParam = filterMap[stat.title];
+                if (filterParam) {
+                  navigate(`/tasks?filter=${filterParam}`);
+                }
+              }}
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -196,7 +208,7 @@ const todayTasks = tasks.filter(task => {
                   <ApperIcon name={stat.icon} size={24} className={stat.color} />
                 </div>
               </div>
-</motion.div>
+            </motion.div>
           ))}
         </div>
 
