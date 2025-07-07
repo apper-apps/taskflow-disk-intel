@@ -525,9 +525,9 @@ const todayTasks = tasks.filter(task => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
           >
-<div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-900">
                 Projects
               </h3>
