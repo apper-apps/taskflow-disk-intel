@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import Header from '@/components/organisms/Header';
@@ -89,9 +89,11 @@ const Projects = () => {
     }
   };
 
+const navigate = useNavigate();
+
   const handleProjectClick = (project) => {
-    // Could navigate to project-specific task view
-    console.log('Project clicked:', project);
+    // Navigate to Tasks page with project filter
+    navigate(`/tasks?project=${project.Id}`);
   };
 
   const openProjectModal = () => {
