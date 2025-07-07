@@ -213,7 +213,7 @@ style={{
                           : '1px solid rgba(255, 255, 255, 0.3)',
                       }}
                     >
-                      <div 
+<div 
                         className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg"
                         style={{
                           background: `
@@ -225,7 +225,8 @@ style={{
                           `,
                           boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)',
                         }}
-{user.firstName?.[0] || user.emailAddress?.[0]?.toUpperCase() || 'U'}
+                      >
+                        {user.firstName?.[0] || user.emailAddress?.[0]?.toUpperCase() || 'U'}
                       </div>
                       <span className={`hidden md:inline text-sm font-semibold ${
                         isDark ? 'text-gray-200' : 'text-gray-700'
