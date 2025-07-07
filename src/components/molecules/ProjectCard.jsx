@@ -26,113 +26,205 @@ return (
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      whileHover={{ y: -4, scale: 1.02 }}
+      whileHover={{ y: -6, scale: 1.02 }}
       transition={{ 
-        duration: 0.3,
+        duration: 0.4,
         type: "spring",
-        stiffness: 400,
-        damping: 25
+        stiffness: 300,
+        damping: 20
       }}
       className={cn(
-        'bg-gradient-to-br from-white/95 to-surface-50/95 backdrop-blur-sm rounded-xl shadow-soft border border-white/20 p-6 hover:shadow-medium hover:border-white/40 transition-all duration-300 cursor-pointer group',
+        'relative rounded-2xl p-6 cursor-pointer group overflow-hidden',
         className
       )}
       style={{
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
-        backdropFilter: 'blur(10px)'
+        background: `
+          linear-gradient(145deg, 
+            rgba(255, 255, 255, 0.9) 0%,
+            rgba(248, 250, 252, 0.95) 25%,
+            rgba(241, 245, 249, 0.3) 50%,
+            rgba(255, 255, 255, 0.9) 100%
+          )
+        `,
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        boxShadow: `
+          0 10px 25px rgba(0, 0, 0, 0.08),
+          0 4px 15px rgba(0, 0, 0, 0.05),
+          inset 1px 1px 0 rgba(255, 255, 255, 0.2)
+        `,
       }}
       onClick={onClick}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="font-semibold text-gray-900 mb-2">{project.name}</h3>
-          <div className="flex items-center space-x-4 text-sm text-gray-600">
-            <div className="flex items-center">
-              <ApperIcon name="CheckSquare" size={16} className="mr-1" />
-              {project.tasksCount || 0} tasks
+      {/* Animated background gradient */}
+      <div 
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{
+          background: `
+            linear-gradient(135deg, 
+              ${project.color || '#3b82f6'}08 0%,
+              ${project.color || '#3b82f6'}04 50%,
+              ${project.color || '#3b82f6'}08 100%
+            )
+          `,
+          animation: 'gradient-shift 8s ease infinite',
+        }}
+      />
+      
+      {/* Project color accent */}
+      <div 
+        className="absolute top-0 right-0 w-20 h-20 opacity-10 rounded-bl-full"
+        style={{
+          background: `linear-gradient(135deg, ${project.color || '#3b82f6'}, ${project.color || '#3b82f6'}80)`,
+        }}
+      />
+      
+      <div className="relative z-10">
+        <div className="flex items-start justify-between mb-6">
+          <div className="flex-1">
+            <div className="flex items-center space-x-3 mb-3">
+              <motion.div 
+                className="w-6 h-6 rounded-xl shadow-lg"
+                style={{ 
+                  background: `linear-gradient(135deg, ${project.color || '#3b82f6'}, ${project.color || '#3b82f6'}dd)`,
+                  boxShadow: `0 4px 15px ${project.color || '#3b82f6'}40`
+                }}
+                whileHover={{ scale: 1.2, rotate: 180 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              />
+              <h3 className="text-xl font-bold text-gray-900">{project.name}</h3>
             </div>
-            <div className="flex items-center">
-              <ApperIcon name="TrendingUp" size={16} className="mr-1" />
-              {progress}% complete
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div 
+                className="flex items-center space-x-2 px-3 py-2 rounded-xl"
+                style={{
+                  background: 'rgba(59, 130, 246, 0.1)',
+                  border: '1px solid rgba(59, 130, 246, 0.2)',
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                <ApperIcon name="CheckSquare" size={18} className="text-blue-600" />
+                <span className="font-semibold text-gray-700">{project.tasksCount || 0} tasks</span>
+              </div>
+              <div 
+                className="flex items-center space-x-2 px-3 py-2 rounded-xl"
+                style={{
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  border: '1px solid rgba(16, 185, 129, 0.2)',
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                <ApperIcon name="TrendingUp" size={18} className="text-green-600" />
+                <span className="font-semibold text-gray-700">{progress}% done</span>
+              </div>
             </div>
           </div>
+          
+          {/* Action buttons */}
+          <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(project);
+                }}
+                className="h-9 w-9 p-0 rounded-xl transition-all duration-300"
+                style={{
+                  background: 'rgba(59, 130, 246, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(59, 130, 246, 0.2)',
+                }}
+              >
+                <ApperIcon name="Edit2" size={16} className="text-blue-600" />
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(project.Id);
+                }}
+                className="h-9 w-9 p-0 rounded-xl transition-all duration-300"
+                style={{
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(239, 68, 68, 0.2)',
+                }}
+              >
+                <ApperIcon name="Trash2" size={16} className="text-red-600" />
+              </Button>
+            </motion.div>
+          </div>
         </div>
-<div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit(project);
-              }}
-              className="h-8 w-8 p-0 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-blue-600 rounded-lg shadow-soft hover:shadow-medium transition-all duration-300"
-            >
-              <ApperIcon name="Edit2" size={14} />
-            </Button>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(project.Id);
-              }}
-              className="h-8 w-8 p-0 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:text-red-600 rounded-lg shadow-soft hover:shadow-medium transition-all duration-300"
-            >
-              <ApperIcon name="Trash2" size={14} />
-            </Button>
-          </motion.div>
-        </div>
-      </div>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">Progress</span>
-          <span className="font-medium text-gray-900">{progress}%</span>
-        </div>
-<div className="w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded-full h-3 shadow-inner-soft">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 100 }}
-            className="bg-gradient-to-r from-primary via-primary-light to-blue-600 h-3 rounded-full shadow-soft relative overflow-hidden"
+        {/* Enhanced Progress Bar */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-semibold text-gray-600">Project Progress</span>
+            <span className="font-bold text-lg" style={{ color: project.color || '#3b82f6' }}>
+              {progress}%
+            </span>
+          </div>
+          
+          <div 
+            className="w-full h-4 rounded-xl overflow-hidden"
             style={{
-              boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)'
+              background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.1))',
+              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)'
             }}
           >
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"
-              animate={{ x: ['-100%', '100%'] }}
-              transition={{ 
-                repeat: Infinity, 
-                duration: 2, 
-                ease: "linear",
-                repeatDelay: 1 
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 1.2, delay: 0.3, type: "spring", stiffness: 100 }}
+              className="h-4 rounded-xl relative overflow-hidden"
+              style={{
+                background: `
+                  linear-gradient(135deg, 
+                    ${project.color || '#3b82f6'} 0%, 
+                    ${project.color || '#3b82f6'}dd 50%, 
+                    ${project.color || '#3b82f6'} 100%
+                  )
+                `,
+                boxShadow: `0 2px 10px ${project.color || '#3b82f6'}50`
               }}
-            />
-          </motion.div>
+            >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-white/30 to-transparent"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ 
+                  repeat: Infinity, 
+                  duration: 2.5, 
+                  ease: "linear",
+                  repeatDelay: 1.5 
+                }}
+              />
+            </motion.div>
+          </div>
         </div>
-      </div>
 
-      <div className="mt-4 flex items-center justify-between">
-<div className="flex items-center space-x-2">
-          <motion.div 
-            className="w-4 h-4 rounded-full shadow-soft"
-            style={{ 
-              background: `linear-gradient(135deg, ${project.color || '#3b82f6'}, ${project.color || '#3b82f6'}dd)`,
-              boxShadow: `0 2px 8px ${project.color || '#3b82f6'}40`
-            }}
-            whileHover={{ scale: 1.2, rotate: 180 }}
-            transition={{ type: "spring", stiffness: 400 }}
-          />
-          <span className="text-sm text-gray-600 font-medium">
-            {project.color || 'Default'}
-          </span>
-        </div>
-        <div className="text-sm text-gray-500">
-          {project.createdAt && `Created ${format(new Date(project.createdAt), 'MMM d, yyyy')}`}
+        {/* Footer */}
+        <div className="mt-6 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-semibold text-gray-600">Color Theme</span>
+            <motion.div 
+              className="w-5 h-5 rounded-lg shadow-lg"
+              style={{ 
+                background: `linear-gradient(135deg, ${project.color || '#3b82f6'}, ${project.color || '#3b82f6'}80)`,
+                boxShadow: `0 3px 12px ${project.color || '#3b82f6'}40`
+              }}
+              whileHover={{ scale: 1.3, rotate: 45 }}
+              transition={{ type: "spring", stiffness: 400 }}
+            />
+          </div>
+          <div className="text-sm text-gray-500 font-medium">
+            {project.createdAt && `Created ${format(new Date(project.createdAt), 'MMM d, yyyy')}`}
+          </div>
         </div>
       </div>
     </motion.div>

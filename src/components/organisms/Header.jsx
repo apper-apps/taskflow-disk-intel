@@ -1,10 +1,11 @@
-import { useState, useContext } from 'react';
-import { useSelector } from 'react-redux';
-import { motion } from 'framer-motion';
-import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-import SearchBar from '@/components/molecules/SearchBar';
-import { AuthContext } from '@/App';
+import React, { useContext, useState } from "react";
+import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
+import { AuthContext } from "@/App";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import SearchBar from "@/components/molecules/SearchBar";
+import { cn } from "@/utils/cn";
 
 const Header = ({ 
   title, 
@@ -29,35 +30,94 @@ return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="bg-gradient-to-r from-white/95 to-surface-50/95 backdrop-blur-xl border-b border-white/20 sticky top-0 z-30 shadow-soft"
+      className="sticky top-0 z-30 relative"
       style={{
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255,255,255,0.2)'
+        background: `
+          linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.85) 0%,
+            rgba(248, 250, 252, 0.9) 25%,
+            rgba(241, 245, 249, 0.85) 50%,
+            rgba(248, 250, 252, 0.9) 75%,
+            rgba(255, 255, 255, 0.85) 100%
+          )
+        `,
+        backdropFilter: 'blur(25px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
+        boxShadow: `
+          0 8px 32px rgba(0, 0, 0, 0.08),
+          0 1px 3px rgba(0, 0, 0, 0.1),
+          inset 0 -1px 0 rgba(255, 255, 255, 0.2)
+        `,
       }}
     >
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onMenuClick}
-              className="lg:hidden h-8 w-8 p-0"
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute top-0 left-0 w-full h-full opacity-30"
+          style={{
+            background: `
+              linear-gradient(90deg, 
+                rgba(59, 130, 246, 0.02) 0%,
+                rgba(147, 51, 234, 0.01) 50%,
+                rgba(236, 72, 153, 0.02) 100%
+              )
+            `,
+            animation: 'gradient-shift 8s ease infinite',
+          }}
+        />
+      </div>
+      
+      <div className="relative px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-18">
+          <div className="flex items-center space-x-6">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <ApperIcon name="Menu" size={20} />
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onMenuClick}
+                className="lg:hidden h-10 w-10 p-0 rounded-xl"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.5)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                }}
+              >
+                <ApperIcon name="Menu" size={22} />
+              </Button>
+            </motion.div>
             
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <h1 
+                className="text-2xl font-bold bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: `
+                    linear-gradient(135deg, 
+                      #1f2937 0%, 
+                      #374151 25%, 
+                      #4b5563 50%, 
+                      #374151 75%, 
+                      #1f2937 100%
+                    )
+                  `,
+                }}
+              >
+                {title}
+              </h1>
+            </motion.div>
           </div>
 
           <div className="flex items-center space-x-4">
             {showSearch && (
               <motion.div
                 animate={{ 
-                  width: isSearchFocused ? 320 : 250,
+                  width: isSearchFocused ? 350 : 280,
                 }}
                 className="hidden sm:block"
               >
@@ -66,74 +126,141 @@ return (
                   onChange={onSearchChange}
                   onClear={onSearchClear}
                   placeholder="Search tasks..."
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setIsSearchFocused(false)}
                 />
               </motion.div>
             )}
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
               {actions.map((action, index) => (
-                <Button
+                <motion.div
                   key={index}
-                  variant={action.variant || 'default'}
-                  size="sm"
-                  onClick={action.onClick}
-                  className={action.className}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  {action.icon && <ApperIcon name={action.icon} size={16} className="mr-1" />}
-                  <span className="hidden sm:inline">{action.label}</span>
-                  {!action.label && action.icon && (
-                    <span className="sm:hidden">
-                      <ApperIcon name={action.icon} size={16} />
-                    </span>
-                  )}
-                </Button>
+                  <Button
+                    variant={action.variant || 'default'}
+                    size="sm"
+                    onClick={action.onClick}
+                    className={cn(
+                      'shadow-lg hover:shadow-xl transition-all duration-300',
+                      action.className
+                    )}
+                  >
+                    {action.icon && <ApperIcon name={action.icon} size={18} className="mr-2" />}
+                    <span className="hidden sm:inline font-semibold">{action.label}</span>
+                    {!action.label && action.icon && (
+                      <span className="sm:hidden">
+                        <ApperIcon name={action.icon} size={18} />
+                      </span>
+                    )}
+                  </Button>
+                </motion.div>
               ))}
 
-              {/* User Menu */}
+              {/* Enhanced User Menu */}
               {isAuthenticated && user && (
                 <div className="relative">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center space-x-2 h-8"
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <div className="w-6 h-6 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium">
-                      {user.firstName?.[0] || user.emailAddress?.[0]?.toUpperCase() || 'U'}
-                    </div>
-                    <span className="hidden md:inline text-sm font-medium text-gray-700">
-                      {user.firstName || user.emailAddress?.split('@')[0]}
-                    </span>
-                    <ApperIcon name="ChevronDown" size={14} className="text-gray-500" />
-                  </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowUserMenu(!showUserMenu)}
+                      className="flex items-center space-x-3 h-12 px-4 rounded-xl"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.6)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                      }}
+                    >
+                      <div 
+                        className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg"
+                        style={{
+                          background: `
+                            linear-gradient(135deg, 
+                              #3b82f6 0%, 
+                              #8b5cf6 50%, 
+                              #06b6d4 100%
+                            )
+                          `,
+                          boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)',
+                        }}
+                      >
+                        {user.firstName?.[0] || user.emailAddress?.[0]?.toUpperCase() || 'U'}
+                      </div>
+                      <span className="hidden md:inline text-sm font-semibold text-gray-700">
+                        {user.firstName || user.emailAddress?.split('@')[0]}
+                      </span>
+                      <motion.div
+                        animate={{ rotate: showUserMenu ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <ApperIcon name="ChevronDown" size={16} className="text-gray-500" />
+                      </motion.div>
+                    </Button>
+                  </motion.div>
 
-{showUserMenu && (
+                  {showUserMenu && (
                     <motion.div
                       initial={{ opacity: 0, y: -10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-64 bg-gradient-to-br from-white/95 to-surface-50/95 backdrop-blur-xl rounded-xl shadow-hard border border-white/20 py-3 z-50"
+                      className="absolute right-0 mt-3 w-72 z-50 rounded-2xl overflow-hidden"
                       style={{
-                        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
-                        backdropFilter: 'blur(20px)',
-                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2)'
+                        background: `
+                          linear-gradient(145deg, 
+                            rgba(255, 255, 255, 0.9) 0%,
+                            rgba(248, 250, 252, 0.95) 100%
+                          )
+                        `,
+                        backdropFilter: 'blur(25px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        boxShadow: `
+                          0 25px 50px rgba(0, 0, 0, 0.15),
+                          0 12px 30px rgba(0, 0, 0, 0.1),
+                          inset 1px 1px 0 rgba(255, 255, 255, 0.3)
+                        `,
                       }}
                     >
-                      <div className="px-4 py-3 border-b border-gradient-to-r from-transparent via-gray-200 to-transparent bg-gradient-to-r from-primary/5 to-secondary/5">
-                        <p className="text-sm font-semibold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                      <div 
+                        className="px-6 py-4 border-b border-white/30"
+                        style={{
+                          background: `
+                            linear-gradient(135deg, 
+                              rgba(59, 130, 246, 0.05) 0%, 
+                              rgba(147, 51, 234, 0.03) 100%
+                            )
+                          `,
+                          backdropFilter: 'blur(10px)'
+                        }}
+                      >
+                        <p 
+                          className="text-lg font-bold bg-clip-text text-transparent"
+                          style={{
+                            backgroundImage: 'linear-gradient(135deg, #1f2937 0%, #4b5563 100%)'
+                          }}
+                        >
                           {user.firstName} {user.lastName}
                         </p>
-                        <p className="text-xs text-gray-500 font-medium">{user.emailAddress}</p>
+                        <p className="text-sm text-gray-600 font-medium mt-1">{user.emailAddress}</p>
                       </div>
                       <motion.button
                         onClick={handleLogout}
-                        className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 transition-all duration-300 flex items-center space-x-2 font-medium"
+                        className="w-full px-6 py-4 text-left flex items-center space-x-3 font-semibold transition-all duration-300 relative group"
+                        style={{
+                          color: '#dc2626',
+                        }}
                         whileHover={{ x: 4 }}
                         whileTap={{ scale: 0.98 }}
                       >
-                        <ApperIcon name="LogOut" size={16} />
-                        <span>Logout</span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-red-50/50 to-red-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <ApperIcon name="LogOut" size={18} className="relative z-10" />
+                        <span className="relative z-10">Logout</span>
                       </motion.button>
                     </motion.div>
                   )}
@@ -143,7 +270,7 @@ return (
           </div>
         </div>
 
-        {/* Mobile search */}
+        {/* Enhanced Mobile search */}
         {showSearch && (
           <div className="sm:hidden pb-4">
             <SearchBar

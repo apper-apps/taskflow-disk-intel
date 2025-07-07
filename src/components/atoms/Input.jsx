@@ -12,14 +12,17 @@ return (
     <motion.input
       type={type}
       className={cn(
-        'flex h-11 w-full rounded-xl border border-gray-300 bg-gradient-to-r from-white to-gray-50/50 px-4 py-3 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary focus:shadow-glow focus:bg-white disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300 backdrop-blur-sm',
-        error && 'border-red-400 focus:border-red-500 focus:ring-red-500/30 focus:shadow-0 focus:shadow-red-500/20',
+        'flex h-12 w-full rounded-xl border-2 px-4 py-3 text-sm font-medium placeholder:text-gray-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300 backdrop-blur-sm',
+        error 
+          ? 'border-red-300 bg-gradient-to-r from-red-50/50 to-white focus:border-red-500 focus:ring-4 focus:ring-red-500/20'
+          : 'border-gray-200 bg-gradient-to-r from-white via-gray-50/30 to-white focus:border-primary focus:ring-4 focus:ring-primary/20 focus:bg-white',
+        'shadow-sm focus:shadow-lg hover:border-gray-300',
         className
       )}
       ref={ref}
       whileFocus={{ 
-        scale: 1.02,
-        transition: { type: "spring", stiffness: 400, damping: 17 }
+        scale: 1.01,
+        transition: { type: "spring", stiffness: 300, damping: 20 }
       }}
       {...props}
     />

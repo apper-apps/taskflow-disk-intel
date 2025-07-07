@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-toastify';
-import TaskCard from '@/components/molecules/TaskCard';
-import Loading from '@/components/ui/Loading';
-import Error from '@/components/ui/Error';
-import Empty from '@/components/ui/Empty';
-import ApperIcon from '@/components/ApperIcon';
-import { taskService } from '@/services/api/taskService';
-
+import React, { useEffect, useState } from "react";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { cn } from "@/lib/utils";
+import ApperIcon from "@/components/ApperIcon";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import TaskCard from "@/components/molecules/TaskCard";
+import { taskService } from "@/services/api/taskService";
 const KanbanBoard = ({ 
   projectId, 
   searchQuery, 
@@ -125,26 +125,107 @@ const KanbanBoard = ({
     return <Empty variant="tasks" onAction={onTaskCreate} actionText="Create First Task" />;
   }
 
-  return (
+return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {columns.map((column) => {
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {columns.map((column, columnIndex) => {
           const columnTasks = getTasksByStatus(column.id);
           
           return (
-            <div key={column.id} className={`rounded-lg border-2 ${column.color} p-4`}>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-900 flex items-center">
-                  <ApperIcon 
-                    name={column.id === 'ToDo' ? 'Circle' : column.id === 'InProgress' ? 'Clock' : 'CheckCircle'} 
-                    size={16} 
-                    className="mr-2" 
-                  />
-                  {column.title}
-                </h3>
-                <span className="bg-white px-2 py-1 rounded-full text-sm font-medium text-gray-600">
+            <motion.div 
+              key={column.id} 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: columnIndex * 0.1 }}
+              className="relative rounded-2xl p-6 overflow-hidden"
+              style={{
+                background: `
+                  linear-gradient(145deg, 
+                    rgba(255, 255, 255, 0.9) 0%,
+                    rgba(248, 250, 252, 0.95) 25%,
+                    rgba(241, 245, 249, 0.3) 50%,
+                    rgba(255, 255, 255, 0.9) 100%
+                  )
+                `,
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: `
+                  0 10px 25px rgba(0, 0, 0, 0.08),
+                  0 4px 15px rgba(0, 0, 0, 0.05),
+                  inset 1px 1px 0 rgba(255, 255, 255, 0.2)
+                `,
+              }}
+            >
+              {/* Column accent */}
+              <div 
+                className="absolute top-0 left-0 right-0 h-1 opacity-60"
+                style={{
+                  background: column.id === 'ToDo' 
+                    ? 'linear-gradient(90deg, #94a3b8, #64748b)'
+                    : column.id === 'InProgress'
+                    ? 'linear-gradient(90deg, #3b82f6, #2563eb)'
+                    : 'linear-gradient(90deg, #10b981, #059669)',
+                }}
+              />
+              
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div 
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{
+                      background: column.id === 'ToDo' 
+                        ? 'linear-gradient(135deg, rgba(148, 163, 184, 0.15), rgba(100, 116, 139, 0.1))'
+                        : column.id === 'InProgress'
+                        ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.1))'
+                        : 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1))',
+                      backdropFilter: 'blur(10px)',
+                      border: column.id === 'ToDo' 
+                        ? '1px solid rgba(148, 163, 184, 0.2)'
+                        : column.id === 'InProgress'
+                        ? '1px solid rgba(59, 130, 246, 0.2)'
+                        : '1px solid rgba(16, 185, 129, 0.2)',
+                    }}
+                  >
+                    <ApperIcon 
+                      name={column.id === 'ToDo' ? 'Circle' : column.id === 'InProgress' ? 'Clock' : 'CheckCircle'} 
+                      size={20} 
+                      className={
+                        column.id === 'ToDo' 
+                          ? 'text-slate-600'
+                          : column.id === 'InProgress'
+                          ? 'text-blue-600'
+                          : 'text-green-600'
+                      }
+                    />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    {column.title}
+                  </h3>
+                </div>
+                
+                <div 
+                  className="px-3 py-1.5 rounded-xl text-sm font-bold"
+                  style={{
+                    background: column.id === 'ToDo' 
+                      ? 'rgba(148, 163, 184, 0.15)'
+                      : column.id === 'InProgress'
+                      ? 'rgba(59, 130, 246, 0.15)'
+                      : 'rgba(16, 185, 129, 0.15)',
+                    color: column.id === 'ToDo' 
+                      ? '#475569'
+                      : column.id === 'InProgress'
+                      ? '#2563eb'
+                      : '#059669',
+                    border: column.id === 'ToDo' 
+                      ? '1px solid rgba(148, 163, 184, 0.2)'
+                      : column.id === 'InProgress'
+                      ? '1px solid rgba(59, 130, 246, 0.2)'
+                      : '1px solid rgba(16, 185, 129, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                  }}
+                >
                   {columnTasks.length}
-                </span>
+                </div>
               </div>
 
               <Droppable droppableId={column.id}>
@@ -152,9 +233,14 @@ const KanbanBoard = ({
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`space-y-3 min-h-[200px] rounded-lg p-2 transition-colors ${
-                      snapshot.isDraggingOver ? 'bg-white/50' : ''
-                    }`}
+                    className={cn(
+                      'space-y-4 min-h-[300px] rounded-xl p-3 transition-all duration-300',
+                      snapshot.isDraggingOver && 'bg-white/30 scale-105'
+                    )}
+                    style={{
+                      backdropFilter: snapshot.isDraggingOver ? 'blur(10px)' : 'none',
+                      border: snapshot.isDraggingOver ? '2px dashed rgba(59, 130, 246, 0.3)' : '2px dashed transparent',
+                    }}
                   >
                     <AnimatePresence>
                       {columnTasks.map((task, index) => (
@@ -168,7 +254,7 @@ const KanbanBoard = ({
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -20 }}
-                              transition={{ duration: 0.2 }}
+                              transition={{ duration: 0.3 }}
                             >
                               <TaskCard
                                 task={task}
@@ -176,7 +262,7 @@ const KanbanBoard = ({
                                 onDelete={handleDeleteTask}
                                 onToggleStatus={handleToggleStatus}
                                 isDragging={snapshot.isDragging}
-                                className={snapshot.isDragging ? 'shadow-lg rotate-2' : ''}
+                                className={snapshot.isDragging ? 'transform rotate-3 scale-105 z-50' : ''}
                               />
                             </motion.div>
                           )}
@@ -187,7 +273,7 @@ const KanbanBoard = ({
                   </div>
                 )}
               </Droppable>
-            </div>
+            </motion.div>
           );
         })}
       </div>

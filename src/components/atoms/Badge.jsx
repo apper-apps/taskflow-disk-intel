@@ -9,28 +9,64 @@ const Badge = forwardRef(({
   ...props 
 }, ref) => {
 const variants = {
-    default: 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 shadow-soft border border-gray-200/50',
-    primary: 'bg-gradient-to-r from-primary/10 to-primary/20 text-primary shadow-soft border border-primary/20',
-    secondary: 'bg-gradient-to-r from-secondary/10 to-secondary/20 text-secondary shadow-soft border border-secondary/20',
-    success: 'bg-gradient-to-r from-green-100 to-green-200 text-green-800 shadow-soft border border-green-200/50',
-    warning: 'bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 shadow-soft border border-yellow-200/50',
-    danger: 'bg-gradient-to-r from-red-100 to-red-200 text-red-800 shadow-soft border border-red-200/50',
-    high: 'bg-gradient-to-r from-red-100 to-red-200 text-red-800 shadow-soft border border-red-200/50',
-    medium: 'bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 shadow-soft border border-yellow-200/50',
-    low: 'bg-gradient-to-r from-green-100 to-green-200 text-green-800 shadow-soft border border-green-200/50',
+    default: `
+      bg-gradient-to-r from-gray-200/80 via-gray-100 to-gray-200/80 
+      text-gray-800 shadow-md border border-gray-300/50
+      hover:shadow-lg backdrop-blur-sm
+    `,
+    primary: `
+      bg-gradient-to-r from-blue-100/80 via-blue-50 to-blue-100/80 
+      text-blue-800 shadow-md border border-blue-300/50
+      hover:shadow-lg hover:shadow-blue-500/20 backdrop-blur-sm
+    `,
+    secondary: `
+      bg-gradient-to-r from-purple-100/80 via-purple-50 to-purple-100/80 
+      text-purple-800 shadow-md border border-purple-300/50
+      hover:shadow-lg hover:shadow-purple-500/20 backdrop-blur-sm
+    `,
+    success: `
+      bg-gradient-to-r from-green-100/80 via-green-50 to-green-100/80 
+      text-green-800 shadow-md border border-green-300/50
+      hover:shadow-lg hover:shadow-green-500/20 backdrop-blur-sm
+    `,
+    warning: `
+      bg-gradient-to-r from-yellow-100/80 via-yellow-50 to-yellow-100/80 
+      text-yellow-800 shadow-md border border-yellow-300/50
+      hover:shadow-lg hover:shadow-yellow-500/20 backdrop-blur-sm
+    `,
+    danger: `
+      bg-gradient-to-r from-red-100/80 via-red-50 to-red-100/80 
+      text-red-800 shadow-md border border-red-300/50
+      hover:shadow-lg hover:shadow-red-500/20 backdrop-blur-sm
+    `,
+    high: `
+      bg-gradient-to-r from-red-100/80 via-red-50 to-red-100/80 
+      text-red-800 shadow-md border border-red-300/50
+      hover:shadow-lg hover:shadow-red-500/20 backdrop-blur-sm
+    `,
+    medium: `
+      bg-gradient-to-r from-yellow-100/80 via-yellow-50 to-yellow-100/80 
+      text-yellow-800 shadow-md border border-yellow-300/50
+      hover:shadow-lg hover:shadow-yellow-500/20 backdrop-blur-sm
+    `,
+    low: `
+      bg-gradient-to-r from-green-100/80 via-green-50 to-green-100/80 
+      text-green-800 shadow-md border border-green-300/50
+      hover:shadow-lg hover:shadow-green-500/20 backdrop-blur-sm
+    `,
   };
 
   const sizes = {
     sm: 'px-3 py-1.5 text-xs',
-    default: 'px-3.5 py-1.5 text-sm',
-    lg: 'px-4 py-2 text-base',
+    default: 'px-4 py-2 text-sm',
+    lg: 'px-5 py-2.5 text-base',
   };
 
   return (
     <motion.span
       ref={ref}
       className={cn(
-        'inline-flex items-center rounded-full font-semibold transition-all duration-300 hover:scale-105 hover:shadow-medium backdrop-blur-sm',
+        'inline-flex items-center rounded-xl font-bold transition-all duration-300 hover:scale-105 relative overflow-hidden',
         variants[variant],
         sizes[size],
         className
@@ -39,7 +75,11 @@ const variants = {
       whileTap={{ scale: 0.95 }}
       {...props}
     >
-      {children}
+      <span className="relative z-10">{children}</span>
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"
+        initial={false}
+      />
     </motion.span>
   );
 });
