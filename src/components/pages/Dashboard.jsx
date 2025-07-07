@@ -196,10 +196,9 @@ const todayTasks = tasks.filter(task => {
                   <ApperIcon name={stat.icon} size={24} className={stat.color} />
                 </div>
               </div>
-            </motion.div>
+</motion.div>
           ))}
         </div>
-</div>
 
         {/* Analytics Section */}
         <motion.div
