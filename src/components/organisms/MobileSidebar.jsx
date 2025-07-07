@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ApperIcon from '@/components/ApperIcon';
 import { cn } from '@/utils/cn';
 
-const MobileSidebar = ({ isOpen, onClose, projects = [], onProjectSelect }) => {
+const MobileSidebar = ({ isOpen, onClose }) => {
   const navigationItems = [
     {
       name: 'Dashboard',
@@ -129,53 +129,6 @@ return (
                 </motion.div>
               ))}
 
-              {projects.length > 0 && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="pt-6 border-t border-gradient-to-r from-transparent via-gray-200 to-transparent mt-6"
-                >
-                  <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4 px-2">
-                    Projects
-                  </h3>
-                  <div className="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
-                    {projects.map((project, index) => (
-                      <motion.button
-                        key={project.Id}
-                        onClick={() => {
-                          onProjectSelect(project);
-                          onClose();
-                        }}
-                        className="w-full flex items-center space-x-3 px-4 py-3 text-left rounded-xl text-sm hover:bg-gradient-to-r hover:from-white/50 hover:to-surface-50/50 hover:shadow-soft hover:border hover:border-white/30 transition-all duration-300 group"
-                        whileHover={{ x: 4, scale: 1.02 }}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.5 + index * 0.1 }}
-                      >
-                        <motion.div 
-                          className="w-4 h-4 rounded-full shadow-soft"
-                          style={{ 
-                            background: `linear-gradient(135deg, ${project.color}, ${project.color}dd)`,
-                            boxShadow: `0 2px 8px ${project.color}40`
-                          }}
-                          whileHover={{ scale: 1.2, rotate: 180 }}
-                          transition={{ type: "spring", stiffness: 400 }}
-                        />
-                        <span className="text-gray-700 truncate group-hover:text-gray-900 font-medium transition-colors">
-                          {project.name}
-                        </span>
-                        <motion.span 
-                          className="text-xs text-gray-500 ml-auto bg-gray-100 px-2 py-1 rounded-md group-hover:bg-primary/10 group-hover:text-primary transition-all duration-300"
-                          whileHover={{ scale: 1.1 }}
-                        >
-                          {project.tasksCount || 0}
-                        </motion.span>
-                      </motion.button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
             </nav>
           </motion.div>
         </>
