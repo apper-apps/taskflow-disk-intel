@@ -1,0 +1,112 @@
+[
+  {
+    "Id": 1,
+    "title": "Design user interface mockups",
+    "description": "Create wireframes and high-fidelity mockups for the new dashboard interface",
+    "dueDate": "2024-01-15T10:00:00Z",
+    "priority": "High",
+    "status": "InProgress",
+    "projectId": 1,
+    "createdAt": "2024-01-10T09:00:00Z",
+    "updatedAt": "2024-01-12T14:30:00Z"
+  },
+  {
+    "Id": 2,
+    "title": "Implement authentication system",
+    "description": "Set up login, registration, and password reset functionality",
+    "dueDate": "2024-01-20T17:00:00Z",
+    "priority": "High",
+    "status": "ToDo",
+    "projectId": 1,
+    "createdAt": "2024-01-10T10:15:00Z",
+    "updatedAt": "2024-01-10T10:15:00Z"
+  },
+  {
+    "Id": 3,
+    "title": "Write unit tests for API endpoints",
+    "description": "Create comprehensive test coverage for all REST API endpoints",
+    "dueDate": "2024-01-18T12:00:00Z",
+    "priority": "Medium",
+    "status": "ToDo",
+    "projectId": 1,
+    "createdAt": "2024-01-11T08:00:00Z",
+    "updatedAt": "2024-01-11T08:00:00Z"
+  },
+  {
+    "Id": 4,
+    "title": "Set up CI/CD pipeline",
+    "description": "Configure automated testing and deployment pipeline",
+    "dueDate": "2024-01-25T16:00:00Z",
+    "priority": "Medium",
+    "status": "Done",
+    "projectId": 1,
+    "createdAt": "2024-01-08T13:20:00Z",
+    "updatedAt": "2024-01-14T11:45:00Z"
+  },
+  {
+    "Id": 5,
+    "title": "Research competitor analysis",
+    "description": "Analyze top 5 competitors and their feature sets",
+    "dueDate": "2024-01-16T14:00:00Z",
+    "priority": "Low",
+    "status": "InProgress",
+    "projectId": 2,
+    "createdAt": "2024-01-09T11:30:00Z",
+    "updatedAt": "2024-01-13T09:15:00Z"
+  },
+  {
+    "Id": 6,
+    "title": "Create marketing landing page",
+    "description": "Design and develop a compelling landing page for product launch",
+    "dueDate": "2024-01-22T10:00:00Z",
+    "priority": "High",
+    "status": "ToDo",
+    "projectId": 2,
+    "createdAt": "2024-01-10T16:45:00Z",
+    "updatedAt": "2024-01-10T16:45:00Z"
+  },
+  {
+    "Id": 7,
+    "title": "Optimize database queries",
+    "description": "Improve performance of slow database queries identified in monitoring",
+    "dueDate": "2024-01-19T15:30:00Z",
+    "priority": "Medium",
+    "status": "InProgress",
+    "projectId": 3,
+    "createdAt": "2024-01-11T14:00:00Z",
+    "updatedAt": "2024-01-13T10:20:00Z"
+  },
+  {
+    "Id": 8,
+    "title": "Update project documentation",
+    "description": "Review and update all project documentation for current version",
+    "dueDate": "2024-01-17T11:00:00Z",
+    "priority": "Low",
+    "status": "Done",
+    "projectId": 3,
+    "createdAt": "2024-01-09T12:15:00Z",
+    "updatedAt": "2024-01-16T16:30:00Z"
+  },
+  {
+    "Id": 9,
+    "title": "Prepare quarterly presentation",
+    "description": "Create slides and prepare presentation for Q1 review meeting",
+    "dueDate": "2024-01-24T09:00:00Z",
+    "priority": "High",
+    "status": "ToDo",
+    "projectId": 2,
+    "createdAt": "2024-01-12T10:00:00Z",
+    "updatedAt": "2024-01-12T10:00:00Z"
+  },
+  {
+    "Id": 10,
+    "title": "Fix responsive design issues",
+    "description": "Address mobile and tablet layout problems on checkout page",
+    "dueDate": "2024-01-21T13:00:00Z",
+    "priority": "Medium",
+    "status": "InProgress",
+    "projectId": 3,
+    "createdAt": "2024-01-13T15:30:00Z",
+    "updatedAt": "2024-01-14T08:45:00Z"
+  }
+]
