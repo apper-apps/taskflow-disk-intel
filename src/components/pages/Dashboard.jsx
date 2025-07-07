@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import Chart from 'react-apexcharts';
 import { motion } from 'framer-motion';
 import { format, startOfWeek, endOfWeek } from 'date-fns';
 import Header from '@/components/organisms/Header';
@@ -142,70 +141,7 @@ const todayTasks = tasks.filter(task => {
       color: 'text-red-600',
       bgColor: 'bg-red-50'
     }
-  ];
-// Calculate chart data
-  const taskStatusData = {
-    series: [
-      tasks.filter(t => t.status === 'ToDo').length,
-      tasks.filter(t => t.status === 'InProgress').length,
-      tasks.filter(t => t.status === 'Done').length
-    ],
-    options: {
-      chart: { type: 'pie', fontFamily: 'Inter, sans-serif' },
-      labels: ['To Do', 'In Progress', 'Completed'],
-      colors: ['#f59e0b', '#3b82f6', '#10b981'],
-      legend: { position: 'bottom' },
-      responsive: [{
-        breakpoint: 480,
-        options: { chart: { width: 300 }, legend: { position: 'bottom' } }
-      }]
-    }
-  };
-
-  const priorityData = {
-    series: [
-      tasks.filter(t => t.priority === 'High').length,
-      tasks.filter(t => t.priority === 'Medium').length,
-      tasks.filter(t => t.priority === 'Low').length
-    ],
-    options: {
-      chart: { type: 'donut', fontFamily: 'Inter, sans-serif' },
-      labels: ['High Priority', 'Medium Priority', 'Low Priority'],
-      colors: ['#ef4444', '#f59e0b', '#10b981'],
-      legend: { position: 'bottom' },
-      plotOptions: { pie: { donut: { size: '70%' } } }
-    }
-  };
-
-  const projectTaskData = {
-    series: [{
-      name: 'Tasks',
-      data: projects.map(project => 
-        tasks.filter(task => task.projectId === project.Id).length
-      )
-    }],
-    options: {
-      chart: { type: 'bar', fontFamily: 'Inter, sans-serif' },
-      plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
-      xaxis: { categories: projects.map(p => p.Name || p.name) },
-      colors: projects.map(p => p.color || '#3b82f6'),
-      dataLabels: { enabled: false }
-    }
-  };
-
-  const weeklyProgressData = {
-    series: [
-      { name: 'Completed', data: [completedThisWeek] },
-      { name: 'Total', data: [weekTasks.length] }
-    ],
-    options: {
-      chart: { type: 'bar', fontFamily: 'Inter, sans-serif' },
-      plotOptions: { bar: { columnWidth: '60%' } },
-      colors: ['#10b981', '#e5e7eb'],
-      xaxis: { categories: ['This Week'] },
-      legend: { position: 'top' }
-    }
-  };
+];
 
   if (loading) return <Loading variant="dashboard" />;
   if (error) return <Error message={error} onRetry={loadDashboardData} />;
@@ -262,64 +198,6 @@ const todayTasks = tasks.filter(task => {
           ))}
         </div>
 
-        {/* Analytics Charts */}
-        {tasks.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mb-8"
-          >
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">Analytics Overview</h3>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Task Status Distribution */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h4 className="text-md font-medium text-gray-900 mb-4">Task Status Distribution</h4>
-                <Chart
-                  options={taskStatusData.options}
-                  series={taskStatusData.series}
-                  type="pie"
-                  height={280}
-                />
-              </div>
-
-              {/* Priority Distribution */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h4 className="text-md font-medium text-gray-900 mb-4">Priority Distribution</h4>
-                <Chart
-                  options={priorityData.options}
-                  series={priorityData.series}
-                  type="donut"
-                  height={280}
-                />
-              </div>
-
-              {/* Tasks by Project */}
-              {projects.length > 0 && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h4 className="text-md font-medium text-gray-900 mb-4">Tasks by Project</h4>
-                  <Chart
-                    options={projectTaskData.options}
-                    series={projectTaskData.series}
-                    type="bar"
-                    height={280}
-                  />
-                </div>
-              )}
-
-              {/* Weekly Progress */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h4 className="text-md font-medium text-gray-900 mb-4">Weekly Progress</h4>
-                <Chart
-                  options={weeklyProgressData.options}
-                  series={weeklyProgressData.series}
-                  type="bar"
-                  height={280}
-                />
-              </div>
-            </div>
-          </motion.div>
-        )}
 
 {/* Today's Tasks */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -463,40 +341,54 @@ const todayTasks = tasks.filter(task => {
             transition={{ delay: 0.4 }}
             className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Recent Projects
+<div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-gray-900">
+                Projects
               </h3>
-              <ApperIcon name="FolderOpen" size={20} className="text-gray-500" />
             </div>
             
             {projects.length === 0 ? (
-              <div className="text-center py-8">
-                <ApperIcon name="FolderPlus" size={48} className="text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No projects yet</p>
-                <p className="text-sm text-gray-400">Create your first project to get started</p>
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ApperIcon name="FolderPlus" size={32} className="text-gray-300" />
+                </div>
+                <h4 className="text-lg font-medium text-gray-900 mb-2">No projects yet</h4>
+                <p className="text-gray-500">Create your first project to get started</p>
               </div>
             ) : (
-              <div className="space-y-3">
-                {projects.slice(0, 4).map((project) => (
+              <div className="space-y-4">
+                {projects.map((project) => (
                   <motion.div
                     key={project.Id}
-                    whileHover={{ x: 2 }}
-                    className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="border border-gray-100 rounded-lg p-6 hover:border-gray-200 hover:shadow-sm transition-all duration-200"
                   >
-                    <div className="flex items-center space-x-3">
-                      <div 
-                        className="w-4 h-4 rounded-full"
-                        style={{ backgroundColor: project.color }}
-                      />
-                      <div>
-                        <p className="font-medium text-gray-900">{project.name}</p>
-                        <p className="text-sm text-gray-500">
-                          {project.tasksCount || 0} tasks
-                        </p>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-3 mb-3">
+                          <div 
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: project.color || '#3b82f6' }}
+                          />
+                          <h4 className="text-lg font-semibold text-gray-900">
+                            {project.name}
+                          </h4>
+                        </div>
+                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                          <div className="flex items-center space-x-1">
+                            <ApperIcon name="CheckSquare" size={14} />
+                            <span>{project.tasksCount || 0} tasks</span>
+                          </div>
+                          {project.createdAt && (
+                            <div className="flex items-center space-x-1">
+                              <ApperIcon name="Calendar" size={14} />
+                              <span>Created {format(new Date(project.createdAt), 'MMM d, yyyy')}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <ApperIcon name="ChevronRight" size={16} className="text-gray-400" />
                   </motion.div>
                 ))}
               </div>
