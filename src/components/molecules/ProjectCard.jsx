@@ -20,18 +20,27 @@ const ProjectCard = ({
 
   const progress = getProgressPercentage();
 
-  return (
+return (
     <motion.div
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      whileHover={{ y: -2, scale: 1.02 }}
-      transition={{ duration: 0.2 }}
+      whileHover={{ y: -4, scale: 1.02 }}
+      transition={{ 
+        duration: 0.3,
+        type: "spring",
+        stiffness: 400,
+        damping: 25
+      }}
       className={cn(
-        'bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200 cursor-pointer',
+        'bg-gradient-to-br from-white/95 to-surface-50/95 backdrop-blur-sm rounded-xl shadow-soft border border-white/20 p-6 hover:shadow-medium hover:border-white/40 transition-all duration-300 cursor-pointer group',
         className
       )}
+      style={{
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
+        backdropFilter: 'blur(10px)'
+      }}
       onClick={onClick}
     >
       <div className="flex items-start justify-between mb-4">
@@ -48,29 +57,33 @@ const ProjectCard = ({
             </div>
           </div>
         </div>
-        <div className="flex items-center space-x-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit(project);
-            }}
-            className="h-8 w-8 p-0 hover:bg-gray-100"
-          >
-            <ApperIcon name="Edit2" size={14} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(project.Id);
-            }}
-            className="h-8 w-8 p-0 hover:bg-red-100 hover:text-red-600"
-          >
-            <ApperIcon name="Trash2" size={14} />
-          </Button>
+<div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(project);
+              }}
+              className="h-8 w-8 p-0 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:text-blue-600 rounded-lg shadow-soft hover:shadow-medium transition-all duration-300"
+            >
+              <ApperIcon name="Edit2" size={14} />
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(project.Id);
+              }}
+              className="h-8 w-8 p-0 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:text-red-600 rounded-lg shadow-soft hover:shadow-medium transition-all duration-300"
+            >
+              <ApperIcon name="Trash2" size={14} />
+            </Button>
+          </motion.div>
         </div>
       </div>
 
@@ -79,23 +92,42 @@ const ProjectCard = ({
           <span className="text-gray-600">Progress</span>
           <span className="font-medium text-gray-900">{progress}%</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
+<div className="w-full bg-gradient-to-r from-gray-200 to-gray-300 rounded-full h-3 shadow-inner-soft">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-gradient-to-r from-primary to-blue-600 h-2 rounded-full"
-          />
+            transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 100 }}
+            className="bg-gradient-to-r from-primary via-primary-light to-blue-600 h-3 rounded-full shadow-soft relative overflow-hidden"
+            style={{
+              boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)'
+            }}
+          >
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"
+              animate={{ x: ['-100%', '100%'] }}
+              transition={{ 
+                repeat: Infinity, 
+                duration: 2, 
+                ease: "linear",
+                repeatDelay: 1 
+              }}
+            />
+          </motion.div>
         </div>
       </div>
 
       <div className="mt-4 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <div 
-            className="w-4 h-4 rounded-full"
-            style={{ backgroundColor: project.color || '#3b82f6' }}
+<div className="flex items-center space-x-2">
+          <motion.div 
+            className="w-4 h-4 rounded-full shadow-soft"
+            style={{ 
+              background: `linear-gradient(135deg, ${project.color || '#3b82f6'}, ${project.color || '#3b82f6'}dd)`,
+              boxShadow: `0 2px 8px ${project.color || '#3b82f6'}40`
+            }}
+            whileHover={{ scale: 1.2, rotate: 180 }}
+            transition={{ type: "spring", stiffness: 400 }}
           />
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-gray-600 font-medium">
             {project.color || 'Default'}
           </span>
         </div>

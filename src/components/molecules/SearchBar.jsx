@@ -13,22 +13,30 @@ const SearchBar = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
-  return (
+return (
     <motion.div
       className={cn(
         'relative flex items-center',
         className
       )}
       animate={{
-        scale: isFocused ? 1.02 : 1,
+        scale: isFocused ? 1.03 : 1,
       }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.3, type: "spring", stiffness: 400 }}
     >
-      <ApperIcon 
-        name="Search" 
-        size={18} 
-        className="absolute left-3 text-gray-400 pointer-events-none z-10" 
-      />
+      <motion.div
+        animate={{
+          scale: isFocused ? 1.1 : 1,
+          color: isFocused ? '#2563eb' : '#9ca3af'
+        }}
+        transition={{ duration: 0.2 }}
+      >
+        <ApperIcon 
+          name="Search" 
+          size={18} 
+          className="absolute left-3 text-gray-400 pointer-events-none z-10 transition-colors duration-200" 
+        />
+      </motion.div>
       <Input
         type="text"
         placeholder={placeholder}
@@ -36,7 +44,7 @@ const SearchBar = ({
         onChange={onChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className="pl-10 pr-10 h-10 bg-white border-gray-300 focus:border-primary focus:ring-primary/20 transition-all duration-200"
+        className="pl-10 pr-10 h-10 bg-gradient-to-r from-white to-surface-50 border-gray-300 focus:border-primary focus:ring-primary/30 transition-all duration-300 shadow-soft focus:shadow-medium hover:border-gray-400 rounded-xl backdrop-blur-sm"
       />
       {value && (
         <motion.button

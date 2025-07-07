@@ -109,36 +109,56 @@ const TaskModal = ({
 
   if (!isOpen) return null;
 
-  return (
+return (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+        className="fixed inset-0 bg-gradient-to-br from-black/60 via-black/50 to-black/60 backdrop-blur-md flex items-center justify-center p-4 z-50"
         onClick={onClose}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ duration: 0.2 }}
-          className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          exit={{ opacity: 0, scale: 0.9, y: 30 }}
+          transition={{ 
+            type: "spring",
+            stiffness: 400,
+            damping: 25,
+            duration: 0.4 
+          }}
+          className="bg-gradient-to-br from-white/95 to-surface-50/95 backdrop-blur-xl rounded-2xl shadow-hard border border-white/20 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
+            backdropFilter: 'blur(20px)',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2)'
+          }}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold text-gray-900">
-                {task ? 'Edit Task' : 'Create New Task'}
-              </h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onClose}
-                className="h-8 w-8 p-0"
+>
+          <div className="p-8 bg-gradient-to-br from-white/50 to-surface-50/30 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-8">
+              <motion.h2 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent"
               >
-                <ApperIcon name="X" size={16} />
-              </Button>
+                {task ? 'Edit Task' : 'Create New Task'}
+              </motion.h2>
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onClose}
+                  className="h-10 w-10 p-0 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:text-red-600 rounded-xl border border-transparent hover:border-red-200/50 transition-all duration-300"
+                >
+                  <ApperIcon name="X" size={18} />
+                </Button>
+              </motion.div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -238,32 +258,43 @@ const TaskModal = ({
                 </FormField>
               </div>
 
-              <div className="flex justify-end space-x-3 pt-6 border-t">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onClose}
-                  disabled={loading}
+<div className="flex justify-end space-x-4 pt-8 border-t border-gradient-to-r from-transparent via-gray-200 to-transparent">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-gradient-to-r from-primary to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={onClose}
+                    disabled={loading}
+                    className="shadow-soft hover:shadow-medium transition-all duration-300"
+                  >
+                    Cancel
+                  </Button>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  {loading ? (
-                    <>
-                      <ApperIcon name="Loader2" size={16} className="mr-2 animate-spin" />
-                      {task ? 'Updating...' : 'Creating...'}
-                    </>
-                  ) : (
-                    <>
-                      <ApperIcon name="Save" size={16} className="mr-2" />
-                      {task ? 'Update Task' : 'Create Task'}
-                    </>
-                  )}
-                </Button>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-gradient-to-r from-primary via-primary-light to-blue-600 hover:from-blue-600 hover:via-blue-700 hover:to-primary-dark shadow-medium hover:shadow-hard hover:shadow-glow transition-all duration-300 border border-primary/20"
+                  >
+                    {loading ? (
+                      <>
+                        <ApperIcon name="Loader2" size={16} className="mr-2 animate-spin" />
+                        {task ? 'Updating...' : 'Creating...'}
+                      </>
+                    ) : (
+                      <>
+                        <ApperIcon name="Save" size={16} className="mr-2" />
+                        {task ? 'Update Task' : 'Create Task'}
+                      </>
+                    )}
+                  </Button>
+                </motion.div>
               </div>
             </form>
           </div>

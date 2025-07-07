@@ -25,11 +25,16 @@ const Header = ({
     await logout();
   };
 
-  return (
+return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="bg-white border-b border-gray-200 sticky top-0 z-30"
+      className="bg-gradient-to-r from-white/95 to-surface-50/95 backdrop-blur-xl border-b border-white/20 sticky top-0 z-30 shadow-soft"
+      style={{
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.2)'
+      }}
     >
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -102,25 +107,34 @@ const Header = ({
                     <ApperIcon name="ChevronDown" size={14} className="text-gray-500" />
                   </Button>
 
-                  {showUserMenu && (
+{showUserMenu && (
                     <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 w-64 bg-gradient-to-br from-white/95 to-surface-50/95 backdrop-blur-xl rounded-xl shadow-hard border border-white/20 py-3 z-50"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
+                        backdropFilter: 'blur(20px)',
+                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2)'
+                      }}
                     >
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-900">
+                      <div className="px-4 py-3 border-b border-gradient-to-r from-transparent via-gray-200 to-transparent bg-gradient-to-r from-primary/5 to-secondary/5">
+                        <p className="text-sm font-semibold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                           {user.firstName} {user.lastName}
                         </p>
-                        <p className="text-xs text-gray-500">{user.emailAddress}</p>
+                        <p className="text-xs text-gray-500 font-medium">{user.emailAddress}</p>
                       </div>
-                      <button
+                      <motion.button
                         onClick={handleLogout}
-                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2"
+                        className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 transition-all duration-300 flex items-center space-x-2 font-medium"
+                        whileHover={{ x: 4 }}
+                        whileTap={{ scale: 0.98 }}
                       >
                         <ApperIcon name="LogOut" size={16} />
                         <span>Logout</span>
-                      </button>
+                      </motion.button>
                     </motion.div>
                   )}
                 </div>

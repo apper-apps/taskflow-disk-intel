@@ -11,12 +11,12 @@ const Button = forwardRef(({
   ...props 
 }, ref) => {
 const variants = {
-    default: 'bg-gradient-to-r from-primary to-primary-dark text-white hover:from-primary-dark hover:to-primary shadow-medium hover:shadow-hard hover:shadow-glow border border-primary/20',
-    outline: 'border-2 border-gradient-to-r from-gray-300 to-gray-400 bg-gradient-to-r from-white to-gray-50 text-gray-700 hover:from-gray-50 hover:to-white hover:border-primary/40 hover:text-primary shadow-soft hover:shadow-medium',
-    secondary: 'bg-gradient-to-r from-secondary to-secondary-dark text-white hover:from-secondary-dark hover:to-secondary shadow-medium hover:shadow-hard hover:shadow-glow-purple border border-secondary/20',
-    ghost: 'text-gray-600 hover:text-primary hover:bg-gradient-to-r hover:from-primary/5 hover:to-secondary/5 hover:shadow-soft',
-    danger: 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-medium hover:shadow-hard border border-red-400/20',
-    success: 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 shadow-medium hover:shadow-hard hover:shadow-glow-green border border-green-400/20',
+    default: 'bg-gradient-to-r from-primary via-primary-light to-primary-dark text-white hover:from-primary-dark hover:via-primary hover:to-blue-700 shadow-medium hover:shadow-hard hover:shadow-glow border border-primary/20 backdrop-blur-sm',
+    outline: 'border-2 border-gray-300 bg-gradient-to-r from-white via-surface-50 to-white text-gray-700 hover:from-surface-50 hover:via-white hover:to-surface-50 hover:border-primary/50 hover:text-primary shadow-soft hover:shadow-medium hover:border-gradient-to-r backdrop-blur-sm',
+    secondary: 'bg-gradient-to-r from-secondary via-secondary-light to-secondary-dark text-white hover:from-secondary-dark hover:via-secondary hover:to-purple-700 shadow-medium hover:shadow-hard hover:shadow-glow-purple border border-secondary/20 backdrop-blur-sm',
+    ghost: 'text-gray-600 hover:text-primary hover:bg-gradient-to-r hover:from-primary/10 hover:via-primary/5 hover:to-secondary/10 hover:shadow-soft hover:backdrop-blur-sm',
+    danger: 'bg-gradient-to-r from-red-500 via-red-600 to-red-700 text-white hover:from-red-600 hover:via-red-700 hover:to-red-800 shadow-medium hover:shadow-hard border border-red-400/20 backdrop-blur-sm',
+    success: 'bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white hover:from-green-600 hover:via-green-700 hover:to-green-800 shadow-medium hover:shadow-hard hover:shadow-glow-green border border-green-400/20 backdrop-blur-sm',
   };
 
   const sizes = {
