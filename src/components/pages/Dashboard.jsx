@@ -1,19 +1,21 @@
-import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { format, startOfWeek, endOfWeek } from 'date-fns';
-import Header from '@/components/organisms/Header';
-import Loading from '@/components/ui/Loading';
-import Error from '@/components/ui/Error';
-import Empty from '@/components/ui/Empty';
-import TaskCard from '@/components/molecules/TaskCard';
-import TaskModal from '@/components/organisms/TaskModal';
-import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-import { taskService } from '@/services/api/taskService';
-import { projectService } from '@/services/api/projectService';
-import { toast } from 'react-toastify';
-
+import React, { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
+import { motion } from "framer-motion";
+import { endOfWeek, format, startOfWeek } from "date-fns";
+import { toast } from "react-toastify";
+import Chart from "react-apexcharts";
+import ApperIcon from "@/components/ApperIcon";
+import TaskModal from "@/components/organisms/TaskModal";
+import Header from "@/components/organisms/Header";
+import Button from "@/components/atoms/Button";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import Projects from "@/components/pages/Projects";
+import Tasks from "@/components/pages/Tasks";
+import TaskCard from "@/components/molecules/TaskCard";
+import { projectService } from "@/services/api/projectService";
+import { taskService } from "@/services/api/taskService";
 const Dashboard = () => {
   const { onMenuClick, onProjectsChange } = useOutletContext();
   const [tasks, setTasks] = useState([]);
@@ -197,9 +199,182 @@ const todayTasks = tasks.filter(task => {
             </motion.div>
           ))}
         </div>
+</div>
 
+        {/* Analytics Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8"
+        >
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Analytics</h3>
+            <p className="text-gray-600">Visual insights into your task and project data</p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Task Status Chart */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900">Task Status Distribution</h4>
+                  <p className="text-sm text-gray-500 mt-1">Breakdown of tasks by current status</p>
+                </div>
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <ApperIcon name="PieChart" size={16} className="text-blue-600" />
+                </div>
+              </div>
+              
+              {tasks.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ApperIcon name="PieChart" size={32} className="text-gray-300" />
+                  </div>
+                  <p className="text-gray-500">No task data available</p>
+                </div>
+              ) : (
+                <Chart
+                  options={{
+                    chart: {
+                      type: 'pie',
+                      height: 350,
+                      toolbar: { show: false },
+                      animations: {
+                        enabled: true,
+                        easing: 'easeinout',
+                        speed: 800
+                      }
+                    },
+                    labels: ['To Do', 'In Progress', 'Completed'],
+                    colors: ['#94a3b8', '#3b82f6', '#10b981'],
+                    legend: {
+                      position: 'bottom',
+                      fontSize: '14px',
+                      fontFamily: 'Inter, sans-serif',
+                      markers: { width: 8, height: 8, radius: 4 }
+                    },
+                    plotOptions: {
+                      pie: {
+                        donut: {
+                          size: '45%'
+                        }
+                      }
+                    },
+                    dataLabels: {
+                      enabled: true,
+                      style: {
+                        fontSize: '12px',
+                        fontFamily: 'Inter, sans-serif',
+                        fontWeight: 600
+                      }
+                    },
+                    responsive: [{
+                      breakpoint: 480,
+                      options: {
+                        chart: { width: 300 },
+                        legend: { position: 'bottom' }
+                      }
+                    }]
+                  }}
+                  series={[
+                    tasks.filter(t => t.status === 'ToDo').length,
+                    tasks.filter(t => t.status === 'InProgress').length,
+                    tasks.filter(t => t.status === 'Done').length
+                  ]}
+                  type="pie"
+                  height={350}
+                />
+              )}
+            </div>
 
-{/* Today's Tasks */}
+            {/* Task Priority Chart */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h4 className="text-lg font-semibold text-gray-900">Task Priority Breakdown</h4>
+                  <p className="text-sm text-gray-500 mt-1">Distribution of tasks by priority level</p>
+                </div>
+                <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center">
+                  <ApperIcon name="BarChart3" size={16} className="text-green-600" />
+                </div>
+              </div>
+              
+              {tasks.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ApperIcon name="BarChart3" size={32} className="text-gray-300" />
+                  </div>
+                  <p className="text-gray-500">No task data available</p>
+                </div>
+              ) : (
+                <Chart
+                  options={{
+                    chart: {
+                      type: 'bar',
+                      height: 350,
+                      toolbar: { show: false },
+                      animations: {
+                        enabled: true,
+                        easing: 'easeinout',
+                        speed: 800
+                      }
+                    },
+                    plotOptions: {
+                      bar: {
+                        borderRadius: 8,
+                        horizontal: false,
+                        columnWidth: '60%'
+                      }
+                    },
+                    dataLabels: { enabled: false },
+                    colors: ['#ef4444', '#f59e0b', '#10b981'],
+                    xaxis: {
+                      categories: ['High', 'Medium', 'Low'],
+                      labels: {
+                        style: {
+                          fontSize: '12px',
+                          fontFamily: 'Inter, sans-serif'
+                        }
+                      }
+                    },
+                    yaxis: {
+                      labels: {
+                        style: {
+                          fontSize: '12px',
+                          fontFamily: 'Inter, sans-serif'
+                        }
+                      }
+                    },
+                    grid: {
+                      borderColor: '#f1f5f9',
+                      strokeDashArray: 3
+                    },
+                    tooltip: {
+                      y: {
+                        formatter: function (val) {
+                          return val + ' tasks'
+                        }
+                      }
+                    }
+                  }}
+                  series={[{
+                    name: 'Tasks',
+                    data: [
+                      tasks.filter(t => t.priority === 'High').length,
+                      tasks.filter(t => t.priority === 'Medium').length,
+                      tasks.filter(t => t.priority === 'Low').length
+                    ]
+                  }]}
+                  type="bar"
+                  height={350}
+                />
+              )}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Today's Tasks */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -393,7 +568,7 @@ const todayTasks = tasks.filter(task => {
                 ))}
               </div>
             )}
-          </motion.div>
+</motion.div>
         </div>
       </div>
 
