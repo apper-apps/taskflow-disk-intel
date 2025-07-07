@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Header from '@/components/organisms/Header';
 import TaskList from '@/components/organisms/TaskList';
@@ -12,7 +12,8 @@ import { taskService } from '@/services/api/taskService';
 import { projectService } from '@/services/api/projectService';
 
 const Tasks = () => {
-  const { onMenuClick, onProjectsChange } = useOutletContext();
+const { onMenuClick, onProjectsChange } = useOutletContext();
+  const [searchParams] = useSearchParams();
   const [viewMode, setViewMode] = useState('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
@@ -23,15 +24,32 @@ const Tasks = () => {
   const [projects, setProjects] = useState([]);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [currentProjectName, setCurrentProjectName] = useState('');
 
   useEffect(() => {
     loadProjects();
-  }, []);
+    
+    // Check for project parameter in URL
+    const projectId = searchParams.get('project');
+    if (projectId) {
+      setFilters(prev => ({
+        ...prev,
+        project: projectId
+      }));
+    }
+  }, [searchParams]);
 
-  const loadProjects = async () => {
+const loadProjects = async () => {
     try {
       const data = await projectService.getAll();
       setProjects(data);
+      
+      // Set current project name if filtering by project
+      const projectId = searchParams.get('project');
+      if (projectId) {
+        const project = data.find(p => p.Id.toString() === projectId);
+        setCurrentProjectName(project?.Name || '');
+      }
     } catch (err) {
       console.error('Failed to load projects:', err);
     }
@@ -81,10 +99,17 @@ const Tasks = () => {
     }
   ];
 
+const getPageTitle = () => {
+    if (currentProjectName) {
+      return `${currentProjectName} Tasks`;
+    }
+    return 'All Tasks';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header
-        title="All Tasks"
+        title={getPageTitle()}
         onMenuClick={onMenuClick}
         showSearch={true}
         searchQuery={searchQuery}
