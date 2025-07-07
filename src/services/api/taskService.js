@@ -17,9 +17,12 @@ class TaskService {
           { field: { Name: "title" } },
           { field: { Name: "description" } },
           { field: { Name: "due_date" } },
-          { field: { Name: "priority" } },
+{ field: { Name: "priority" } },
           { field: { Name: "status" } },
-          { field: { Name: "project_id" } },
+          { 
+            field: { Name: "project_id" },
+            referenceField: { field: { Name: "Name" } }
+          },
           { field: { Name: "created_at" } },
           { field: { Name: "updated_at" } },
           { field: { Name: "Tags" } },
@@ -47,9 +50,10 @@ class TaskService {
         title: task.title,
         description: task.description,
         dueDate: task.due_date,
-        priority: task.priority,
+priority: task.priority,
         status: task.status,
         projectId: task.project_id?.Id || task.project_id,
+        projectName: task.project_id?.Name || null,
         createdAt: task.created_at,
         updatedAt: task.updated_at,
         Tags: task.Tags,
@@ -73,9 +77,13 @@ class TaskService {
           { field: { Name: "status" } },
           { field: { Name: "project_id" } },
           { field: { Name: "created_at" } },
-          { field: { Name: "updated_at" } },
+{ field: { Name: "updated_at" } },
           { field: { Name: "Tags" } },
-          { field: { Name: "Owner" } }
+          { field: { Name: "Owner" } },
+          { 
+            field: { Name: "project_id" },
+            referenceField: { field: { Name: "Name" } }
+          }
         ]
       };
       
@@ -98,9 +106,10 @@ class TaskService {
         title: task.title,
         description: task.description,
         dueDate: task.due_date,
-        priority: task.priority,
+priority: task.priority,
         status: task.status,
         projectId: task.project_id?.Id || task.project_id,
+        projectName: task.project_id?.Name || null,
         createdAt: task.created_at,
         updatedAt: task.updated_at,
         Tags: task.Tags,
@@ -120,9 +129,12 @@ class TaskService {
           { field: { Name: "title" } },
           { field: { Name: "description" } },
           { field: { Name: "due_date" } },
-          { field: { Name: "priority" } },
+{ field: { Name: "priority" } },
           { field: { Name: "status" } },
-          { field: { Name: "project_id" } },
+          { 
+            field: { Name: "project_id" },
+            referenceField: { field: { Name: "Name" } }
+          },
           { field: { Name: "created_at" } },
           { field: { Name: "updated_at" } },
           { field: { Name: "Tags" } },
@@ -157,9 +169,10 @@ class TaskService {
         title: task.title,
         description: task.description,
         dueDate: task.due_date,
-        priority: task.priority,
+priority: task.priority,
         status: task.status,
         projectId: task.project_id?.Id || task.project_id,
+        projectName: task.project_id?.Name || null,
         createdAt: task.created_at,
         updatedAt: task.updated_at,
         Tags: task.Tags,

@@ -102,7 +102,7 @@ const Dashboard = () => {
   const startWeek = startOfWeek(today);
   const endWeek = endOfWeek(today);
 
-  const todayTasks = tasks.filter(task => {
+const todayTasks = tasks.filter(task => {
     if (!task.dueDate) return false;
     const taskDate = new Date(task.dueDate);
     return taskDate.toDateString() === today.toDateString();
@@ -321,8 +321,7 @@ const Dashboard = () => {
           </motion.div>
         )}
 
-        {/* Today's Tasks */}
-        {/* Today's Tasks */}
+{/* Today's Tasks */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -330,33 +329,125 @@ const Dashboard = () => {
             transition={{ delay: 0.3 }}
             className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Due Today
-              </h3>
-              <ApperIcon name="Calendar" size={20} className="text-gray-500" />
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Tasks Due Today
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  {todayTasks.length} {todayTasks.length === 1 ? 'task' : 'tasks'} requiring attention
+                </p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <ApperIcon name="Calendar" size={16} className="text-blue-600" />
+                </div>
+              </div>
             </div>
             
             {todayTasks.length === 0 ? (
-              <div className="text-center py-8">
-                <ApperIcon name="CheckCircle" size={48} className="text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No tasks due today</p>
-                <p className="text-sm text-gray-400">You're all caught up!</p>
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ApperIcon name="CheckCircle" size={32} className="text-green-500" />
+                </div>
+                <h4 className="text-lg font-medium text-gray-900 mb-2">All caught up!</h4>
+                <p className="text-gray-500 mb-4">No tasks are due today. Great work!</p>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={openTaskModal}
+                  className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                >
+                  <ApperIcon name="Plus" size={16} className="mr-2" />
+                  Plan Tomorrow
+                </Button>
               </div>
             ) : (
-              <div className="space-y-3">
-                {todayTasks.slice(0, 3).map((task) => (
-                  <TaskCard
+              <div className="space-y-4">
+                {todayTasks.slice(0, 4).map((task) => (
+                  <motion.div
                     key={task.Id}
-                    task={task}
-                    onEdit={handleTaskEdit}
-                    onDelete={handleTaskDelete}
-                    onToggleStatus={handleToggleStatus}
-                  />
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="border border-gray-100 rounded-lg p-4 hover:border-gray-200 hover:shadow-sm transition-all duration-200"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-2">
+                          {task.projectName && (
+                            <div className="flex items-center space-x-2">
+                              <div 
+                                className="w-3 h-3 rounded-full"
+                                style={{ 
+                                  backgroundColor: projects.find(p => p.Id === task.projectId)?.color || '#3b82f6' 
+                                }}
+                              />
+                              <span className="text-xs font-medium text-gray-600 bg-gray-50 px-2 py-1 rounded-md">
+                                {task.projectName}
+                              </span>
+                            </div>
+                          )}
+                          <div className={`text-xs font-medium px-2 py-1 rounded-md ${
+                            task.priority === 'High' 
+                              ? 'bg-red-50 text-red-700' 
+                              : task.priority === 'Medium' 
+                              ? 'bg-yellow-50 text-yellow-700' 
+                              : 'bg-green-50 text-green-700'
+                          }`}>
+                            {task.priority}
+                          </div>
+                        </div>
+                        <h4 className="font-medium text-gray-900 mb-1">
+                          {task.title || task.Name}
+                        </h4>
+                        {task.description && (
+                          <p className="text-sm text-gray-600 line-clamp-2">
+                            {task.description}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-2 ml-4">
+                        <button
+                          onClick={() => handleToggleStatus(task.Id)}
+                          className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors ${
+                            task.status === 'Done'
+                              ? 'bg-green-500 border-green-500'
+                              : 'border-gray-300 hover:border-green-400'
+                          }`}
+                        >
+                          {task.status === 'Done' && (
+                            <ApperIcon name="Check" size={14} className="text-white" />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => handleTaskEdit(task)}
+                          className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-blue-600 transition-colors"
+                        >
+                          <ApperIcon name="Edit2" size={14} />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className={`text-xs px-2 py-1 rounded-md ${
+                        task.status === 'ToDo' 
+                          ? 'bg-gray-100 text-gray-700'
+                          : task.status === 'InProgress'
+                          ? 'bg-blue-100 text-blue-700'
+                          : 'bg-green-100 text-green-700'
+                      }`}>
+                        {task.status === 'ToDo' ? 'To Do' : task.status === 'InProgress' ? 'In Progress' : 'Completed'}
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <ApperIcon name="Clock" size={12} className="mr-1" />
+                        Due today
+                      </div>
+                    </div>
+                  </motion.div>
                 ))}
-                {todayTasks.length > 3 && (
-                  <div className="text-center pt-2">
-                    <Button variant="ghost" size="sm">
+                {todayTasks.length > 4 && (
+                  <div className="text-center pt-4 border-t border-gray-100">
+                    <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+                      <ApperIcon name="ChevronDown" size={16} className="mr-2" />
                       View all {todayTasks.length} tasks
                     </Button>
                   </div>
