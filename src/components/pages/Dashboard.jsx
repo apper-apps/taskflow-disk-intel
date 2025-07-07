@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import Chart from 'react-apexcharts';
 import { motion } from 'framer-motion';
 import { format, startOfWeek, endOfWeek } from 'date-fns';
 import Header from '@/components/organisms/Header';
@@ -142,6 +143,69 @@ const Dashboard = () => {
       bgColor: 'bg-red-50'
     }
   ];
+// Calculate chart data
+  const taskStatusData = {
+    series: [
+      tasks.filter(t => t.status === 'ToDo').length,
+      tasks.filter(t => t.status === 'InProgress').length,
+      tasks.filter(t => t.status === 'Done').length
+    ],
+    options: {
+      chart: { type: 'pie', fontFamily: 'Inter, sans-serif' },
+      labels: ['To Do', 'In Progress', 'Completed'],
+      colors: ['#f59e0b', '#3b82f6', '#10b981'],
+      legend: { position: 'bottom' },
+      responsive: [{
+        breakpoint: 480,
+        options: { chart: { width: 300 }, legend: { position: 'bottom' } }
+      }]
+    }
+  };
+
+  const priorityData = {
+    series: [
+      tasks.filter(t => t.priority === 'High').length,
+      tasks.filter(t => t.priority === 'Medium').length,
+      tasks.filter(t => t.priority === 'Low').length
+    ],
+    options: {
+      chart: { type: 'donut', fontFamily: 'Inter, sans-serif' },
+      labels: ['High Priority', 'Medium Priority', 'Low Priority'],
+      colors: ['#ef4444', '#f59e0b', '#10b981'],
+      legend: { position: 'bottom' },
+      plotOptions: { pie: { donut: { size: '70%' } } }
+    }
+  };
+
+  const projectTaskData = {
+    series: [{
+      name: 'Tasks',
+      data: projects.map(project => 
+        tasks.filter(task => task.projectId === project.Id).length
+      )
+    }],
+    options: {
+      chart: { type: 'bar', fontFamily: 'Inter, sans-serif' },
+      plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
+      xaxis: { categories: projects.map(p => p.Name || p.name) },
+      colors: projects.map(p => p.color || '#3b82f6'),
+      dataLabels: { enabled: false }
+    }
+  };
+
+  const weeklyProgressData = {
+    series: [
+      { name: 'Completed', data: [completedThisWeek] },
+      { name: 'Total', data: [weekTasks.length] }
+    ],
+    options: {
+      chart: { type: 'bar', fontFamily: 'Inter, sans-serif' },
+      plotOptions: { bar: { columnWidth: '60%' } },
+      colors: ['#10b981', '#e5e7eb'],
+      xaxis: { categories: ['This Week'] },
+      legend: { position: 'top' }
+    }
+  };
 
   if (loading) return <Loading variant="dashboard" />;
   if (error) return <Error message={error} onRetry={loadDashboardData} />;
@@ -198,6 +262,66 @@ const Dashboard = () => {
           ))}
         </div>
 
+        {/* Analytics Charts */}
+        {tasks.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mb-8"
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Analytics Overview</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Task Status Distribution */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h4 className="text-md font-medium text-gray-900 mb-4">Task Status Distribution</h4>
+                <Chart
+                  options={taskStatusData.options}
+                  series={taskStatusData.series}
+                  type="pie"
+                  height={280}
+                />
+              </div>
+
+              {/* Priority Distribution */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h4 className="text-md font-medium text-gray-900 mb-4">Priority Distribution</h4>
+                <Chart
+                  options={priorityData.options}
+                  series={priorityData.series}
+                  type="donut"
+                  height={280}
+                />
+              </div>
+
+              {/* Tasks by Project */}
+              {projects.length > 0 && (
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <h4 className="text-md font-medium text-gray-900 mb-4">Tasks by Project</h4>
+                  <Chart
+                    options={projectTaskData.options}
+                    series={projectTaskData.series}
+                    type="bar"
+                    height={280}
+                  />
+                </div>
+              )}
+
+              {/* Weekly Progress */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h4 className="text-md font-medium text-gray-900 mb-4">Weekly Progress</h4>
+                <Chart
+                  options={weeklyProgressData.options}
+                  series={weeklyProgressData.series}
+                  type="bar"
+                  height={280}
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Today's Tasks */}
         {/* Today's Tasks */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <motion.div
