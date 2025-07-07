@@ -2,10 +2,10 @@ import React, { useContext, useState } from "react";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { AuthContext } from "@/App";
+import { cn } from "@/utils/cn";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import SearchBar from "@/components/molecules/SearchBar";
-import { cn } from "@/utils/cn";
 
 const Header = ({ 
   title, 
@@ -17,10 +17,10 @@ const Header = ({
   actions = []
 }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
+const [showUserMenu, setShowUserMenu] = useState(false);
   const { logout } = useContext(AuthContext);
-  const { user, isAuthenticated } = useSelector((state) => state.user);
-
+  const { user, isAuthenticated, currentTheme } = useSelector((state) => state.user);
+  const isDark = currentTheme === 'dark';
   const handleLogout = async () => {
     setShowUserMenu(false);
     await logout();
@@ -31,23 +31,41 @@ return (
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       className="sticky top-0 z-30 relative"
-      style={{
-        background: `
-          linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.85) 0%,
-            rgba(248, 250, 252, 0.9) 25%,
-            rgba(241, 245, 249, 0.85) 50%,
-            rgba(248, 250, 252, 0.9) 75%,
-            rgba(255, 255, 255, 0.85) 100%
-          )
-        `,
+style={{
+        background: isDark 
+          ? `
+              linear-gradient(135deg, 
+                rgba(15, 23, 42, 0.85) 0%,
+                rgba(30, 41, 59, 0.9) 25%,
+                rgba(51, 65, 85, 0.85) 50%,
+                rgba(30, 41, 59, 0.9) 75%,
+                rgba(15, 23, 42, 0.85) 100%
+              )
+            `
+          : `
+              linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.85) 0%,
+                rgba(248, 250, 252, 0.9) 25%,
+                rgba(241, 245, 249, 0.85) 50%,
+                rgba(248, 250, 252, 0.9) 75%,
+                rgba(255, 255, 255, 0.85) 100%
+              )
+            `,
         backdropFilter: 'blur(25px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
-        boxShadow: `
-          0 8px 32px rgba(0, 0, 0, 0.08),
-          0 1px 3px rgba(0, 0, 0, 0.1),
-          inset 0 -1px 0 rgba(255, 255, 255, 0.2)
-        `,
+        borderBottom: isDark 
+          ? '1px solid rgba(255, 255, 255, 0.1)' 
+          : '1px solid rgba(255, 255, 255, 0.3)',
+        boxShadow: isDark
+          ? `
+              0 8px 32px rgba(0, 0, 0, 0.3),
+              0 1px 3px rgba(0, 0, 0, 0.2),
+              inset 0 -1px 0 rgba(255, 255, 255, 0.1)
+            `
+          : `
+              0 8px 32px rgba(0, 0, 0, 0.08),
+              0 1px 3px rgba(0, 0, 0, 0.1),
+              inset 0 -1px 0 rgba(255, 255, 255, 0.2)
+            `,
       }}
     >
       {/* Animated background elements */}
@@ -79,10 +97,14 @@ return (
                 size="sm"
                 onClick={onMenuClick}
                 className="lg:hidden h-10 w-10 p-0 rounded-xl"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.5)',
+style={{
+                  background: isDark 
+                    ? 'rgba(15, 23, 42, 0.5)' 
+                    : 'rgba(255, 255, 255, 0.5)',
                   backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  border: isDark 
+                    ? '1px solid rgba(255, 255, 255, 0.1)' 
+                    : '1px solid rgba(255, 255, 255, 0.3)',
                 }}
               >
                 <ApperIcon name="Menu" size={22} />
@@ -94,18 +116,28 @@ return (
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <h1 
+<h1 
                 className="text-2xl font-bold bg-clip-text text-transparent"
                 style={{
-                  backgroundImage: `
-                    linear-gradient(135deg, 
-                      #1f2937 0%, 
-                      #374151 25%, 
-                      #4b5563 50%, 
-                      #374151 75%, 
-                      #1f2937 100%
-                    )
-                  `,
+                  backgroundImage: isDark
+                    ? `
+                        linear-gradient(135deg, 
+                          #f8fafc 0%, 
+                          #e2e8f0 25%, 
+                          #cbd5e1 50%, 
+                          #e2e8f0 75%, 
+                          #f8fafc 100%
+                        )
+                      `
+                    : `
+                        linear-gradient(135deg, 
+                          #1f2937 0%, 
+                          #374151 25%, 
+                          #4b5563 50%, 
+                          #374151 75%, 
+                          #1f2937 100%
+                        )
+                      `,
                 }}
               >
                 {title}
@@ -171,10 +203,14 @@ return (
                       size="sm"
                       onClick={() => setShowUserMenu(!showUserMenu)}
                       className="flex items-center space-x-3 h-12 px-4 rounded-xl"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.6)',
+style={{
+                        background: isDark 
+                          ? 'rgba(15, 23, 42, 0.6)' 
+                          : 'rgba(255, 255, 255, 0.6)',
                         backdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        border: isDark 
+                          ? '1px solid rgba(255, 255, 255, 0.1)' 
+                          : '1px solid rgba(255, 255, 255, 0.3)',
                       }}
                     >
                       <div 
@@ -189,10 +225,11 @@ return (
                           `,
                           boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)',
                         }}
-                      >
-                        {user.firstName?.[0] || user.emailAddress?.[0]?.toUpperCase() || 'U'}
+{user.firstName?.[0] || user.emailAddress?.[0]?.toUpperCase() || 'U'}
                       </div>
-                      <span className="hidden md:inline text-sm font-semibold text-gray-700">
+                      <span className={`hidden md:inline text-sm font-semibold ${
+                        isDark ? 'text-gray-200' : 'text-gray-700'
+                      }`}>
                         {user.firstName || user.emailAddress?.split('@')[0]}
                       </span>
                       <motion.div
@@ -211,43 +248,71 @@ return (
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
                       className="absolute right-0 mt-3 w-72 z-50 rounded-2xl overflow-hidden"
-                      style={{
-                        background: `
-                          linear-gradient(145deg, 
-                            rgba(255, 255, 255, 0.9) 0%,
-                            rgba(248, 250, 252, 0.95) 100%
-                          )
-                        `,
+style={{
+                        background: isDark 
+                          ? `
+                              linear-gradient(145deg, 
+                                rgba(15, 23, 42, 0.9) 0%,
+                                rgba(30, 41, 59, 0.95) 100%
+                              )
+                            `
+                          : `
+                              linear-gradient(145deg, 
+                                rgba(255, 255, 255, 0.9) 0%,
+                                rgba(248, 250, 252, 0.95) 100%
+                              )
+                            `,
                         backdropFilter: 'blur(25px)',
-                        border: '1px solid rgba(255, 255, 255, 0.3)',
-                        boxShadow: `
-                          0 25px 50px rgba(0, 0, 0, 0.15),
-                          0 12px 30px rgba(0, 0, 0, 0.1),
-                          inset 1px 1px 0 rgba(255, 255, 255, 0.3)
-                        `,
+                        border: isDark 
+                          ? '1px solid rgba(255, 255, 255, 0.1)' 
+                          : '1px solid rgba(255, 255, 255, 0.3)',
+                        boxShadow: isDark
+                          ? `
+                              0 25px 50px rgba(0, 0, 0, 0.5),
+                              0 12px 30px rgba(0, 0, 0, 0.3),
+                              inset 1px 1px 0 rgba(255, 255, 255, 0.1)
+                            `
+                          : `
+                              0 25px 50px rgba(0, 0, 0, 0.15),
+                              0 12px 30px rgba(0, 0, 0, 0.1),
+                              inset 1px 1px 0 rgba(255, 255, 255, 0.3)
+                            `,
                       }}
                     >
-                      <div 
-                        className="px-6 py-4 border-b border-white/30"
+<div 
+                        className={`px-6 py-4 border-b ${
+                          isDark ? 'border-white/10' : 'border-white/30'
+                        }`}
                         style={{
-                          background: `
-                            linear-gradient(135deg, 
-                              rgba(59, 130, 246, 0.05) 0%, 
-                              rgba(147, 51, 234, 0.03) 100%
-                            )
-                          `,
+                          background: isDark
+                            ? `
+                                linear-gradient(135deg, 
+                                  rgba(59, 130, 246, 0.08) 0%, 
+                                  rgba(147, 51, 234, 0.05) 100%
+                                )
+                              `
+                            : `
+                                linear-gradient(135deg, 
+                                  rgba(59, 130, 246, 0.05) 0%, 
+                                  rgba(147, 51, 234, 0.03) 100%
+                                )
+                              `,
                           backdropFilter: 'blur(10px)'
                         }}
                       >
                         <p 
-                          className="text-lg font-bold bg-clip-text text-transparent"
+className="text-lg font-bold bg-clip-text text-transparent"
                           style={{
-                            backgroundImage: 'linear-gradient(135deg, #1f2937 0%, #4b5563 100%)'
+                            backgroundImage: isDark
+                              ? 'linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%)'
+                              : 'linear-gradient(135deg, #1f2937 0%, #4b5563 100%)'
                           }}
                         >
                           {user.firstName} {user.lastName}
                         </p>
-                        <p className="text-sm text-gray-600 font-medium mt-1">{user.emailAddress}</p>
+                        <p className={`text-sm font-medium mt-1 ${
+                          isDark ? 'text-gray-300' : 'text-gray-600'
+                        }`}>{user.emailAddress}</p>
                       </div>
                       <motion.button
                         onClick={handleLogout}
